@@ -22,9 +22,8 @@ figma.on("selectionchange", () => {
         const gridCount = columnGrid.count;
         const gridOffset = columnGrid.offset;
         const gridGutter = columnGrid.gutterSize;
-
         const availableWidth =
-          frameWidth - 2 * gridOffset - (gridCount - 1) * gridGutter;
+          frameWidth - 2 * (gridOffset ?? 0) - (gridCount - 1) * gridGutter;
         const columnWidth = availableWidth / gridCount;
 
         const spannedColumns = Math.round(
@@ -33,7 +32,7 @@ figma.on("selectionchange", () => {
 
         figma.ui.postMessage({
           type: "result",
-          message: `${spannedColumns} column${ spannedColumns === 1 ? "" : "s" }`,
+          message: `${spannedColumns} column${spannedColumns === 1 ? "" : "s"}`,
         });
       } else {
         figma.ui.postMessage({
@@ -44,7 +43,8 @@ figma.on("selectionchange", () => {
     } else {
       figma.ui.postMessage({
         type: "error",
-        message: "The selected element is not inside a frame with a column grid.",
+        message:
+          "The selected element is not inside a frame with a column grid.",
       });
     }
   } else {
