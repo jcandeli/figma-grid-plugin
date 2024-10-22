@@ -1,0 +1,32 @@
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  #result {
+    margin-top: 20px;
+  }
+</style>
+
+<h2>Grid Column Counter</h2>
+<p id="result">Select an element to calculate how many grid columns it spans.</p>
+<button id="close">Close</button>
+
+<script>
+  document.getElementById('close').onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+  }
+
+  onmessage = (event) => {
+    const message = event.data.pluginMessage;
+    const resultElement = document.getElementById('result');
+
+    if (message.type === 'result') {
+      resultElement.textContent = message.message;
+      resultElement.style.color = 'green';
+    } else if (message.type === 'error') {
+      resultElement.textContent = message.message;
+      resultElement.style.color = 'red';
+    }
+  }
+</script>
