@@ -10,41 +10,57 @@ figma.on("selectionchange", () => {
 
     if (parentFrame && "layoutGrids" in parentFrame) {
       const grids = parentFrame.layoutGrids;
-      const columnGrid = grids.find((grid) => grid.pattern === "COLUMNS");
+      const layoutGrid = grids.find((grid) =>
+        ["COLUMNS", "ROWS"].includes(grid.pattern)
+      );
+      console.log(layoutGrid);
       if (
-        columnGrid &&
-        "count" in columnGrid &&
-        "offset" in columnGrid &&
-        "gutterSize" in columnGrid
+        layoutGrid &&
+        "count" in layoutGrid &&
+        "offset" in layoutGrid &&
+        "gutterSize" in layoutGrid
       ) {
         const frameWidth = parentFrame.width;
+        const frameHeight = parentFrame.height;
         const elementWidth = selectedNode.width;
-        const gridCount = columnGrid.count;
-        const gridOffset = columnGrid.offset;
-        const gridGutter = columnGrid.gutterSize;
-        const availableWidth =
-          frameWidth - 2 * (gridOffset ?? 0) - (gridCount - 1) * gridGutter;
-        const columnWidth = availableWidth / gridCount;
+        const elementHeight = selectedNode.height;
+        const gridCount = layoutGrid.count;
+        const gridOffset = layoutGrid.offset;
+        const gridGutter = layoutGrid.gutterSize;
 
-        const spannedColumns = Math.round(
-          elementWidth / (columnWidth + gridGutter)
-        );
+        let spannedUnits: number = 0;
+        let unitType: string = "";
 
+        if (layoutGrid.pattern === "COLUMNS") {
+          const availableWidth =
+            frameWidth - 2 * (gridOffset ?? 0) - (gridCount - 1) * gridGutter;
+          const columnWidth = availableWidth / gridCount;
+          spannedUnits = Math.round(elementWidth / (columnWidth + gridGutter));
+          unitType = "column";
+        } else if (layoutGrid.pattern === "ROWS") {
+          const availableHeight =
+            frameHeight - 2 * (gridOffset ?? 0) - (gridCount - 1) * gridGutter;
+          const rowHeight = availableHeight / gridCount;
+          spannedUnits = Math.round(elementHeight / (rowHeight + gridGutter));
+          unitType = "row";
+        }
         figma.ui.postMessage({
           type: "result",
-          message: `${spannedColumns} column${spannedColumns === 1 ? "" : "s"}`,
+          message: `${spannedUnits} ${unitType}${
+            spannedUnits === 1 ? "" : "s"
+          }`,
         });
       } else {
         figma.ui.postMessage({
           type: "error",
-          message: "The parent frame doesn't have a column grid.",
+          message: "The parent frame doesn't have a valid layout grid.",
         });
       }
     } else {
       figma.ui.postMessage({
         type: "error",
         message:
-          "The selected element is not inside a frame with a column grid.",
+          "The selected element is not inside a frame with a layout grid.",
       });
     }
   } else {

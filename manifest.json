@@ -1,6 +1,6 @@
 {
-  "name": "Grid Column Counter",
-  "id": "grid-column-counter",
+  "name": "Grid Counter",
+  "id": "grid-counter",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "ui.html",

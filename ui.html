@@ -6,11 +6,42 @@
   #result {
     margin-top: 20px;
   }
+  .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  height: 36px;
+  background: #0D99FF;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.button:hover {
+  background: #0086E6;
+}
+
+.button:active {
+  background: #0074CC;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(13, 153, 255, 0.5);
+}
+
 </style>
 
-<h2>Grid Column Counter</h2>
-<p id="result">Select an element to calculate how many grid columns it spans.</p>
-<button id="close">Close</button>
+<h2>Grid Counter</h2>
+<p id="result">Select an element to calculate how many grid rows or columns it spans.</p>
+<button id="close" class="button">Close</button>
 
 <script>
   document.getElementById('close').onclick = () => {
