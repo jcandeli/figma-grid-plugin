@@ -1,9 +1,11 @@
 {
   "name": "Grid Counter",
-  "id": "grid-counter",
+  "id": "1431021923492944350",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "ui.html",
+  "networkAccess": { "allowedDomains": ["none"] },
+  "documentAccess": "dynamic-page",
   "editorType": [
     "figma"
   ]
