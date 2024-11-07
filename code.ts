@@ -6,14 +6,29 @@ figma.on("selectionchange", () => {
   const selection = figma.currentPage.selection;
   if (selection.length === 1) {
     const selectedNode = selection[0];
-    const parentFrame = selectedNode.parent;
+
+    // Find the nearest parent frame with a layout grid
+    let currentNode = selectedNode;
+    let parentFrame = null;
+
+    while (currentNode.parent && currentNode.parent.type !== "DOCUMENT") {
+      const parent = currentNode.parent;
+
+      // Check if the parent has layoutGrids and is a frame-like container
+      if ("layoutGrids" in parent && parent.type === "FRAME") {
+        parentFrame = parent;
+        break;
+      }
+
+      currentNode = parent as SceneNode;
+    }
 
     if (parentFrame && "layoutGrids" in parentFrame) {
       const grids = parentFrame.layoutGrids;
       const layoutGrid = grids.find((grid) =>
         ["COLUMNS", "ROWS"].includes(grid.pattern)
       );
-      console.log(layoutGrid);
+
       if (
         layoutGrid &&
         "count" in layoutGrid &&
@@ -59,8 +74,7 @@ figma.on("selectionchange", () => {
     } else {
       figma.ui.postMessage({
         type: "error",
-        message:
-          "The selected element is not inside a frame with a layout grid.",
+        message: "No parent frame with a layout grid was found.",
       });
     }
   } else {
