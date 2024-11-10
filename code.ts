@@ -16,14 +16,27 @@ figma.on("selectionchange", () => {
 
       // Check if the parent has layoutGrids and is a frame-like container
       if ("layoutGrids" in parent && parent.type === "FRAME") {
-        parentFrame = parent;
-        break;
+        const grids = parent.layoutGrids;
+        const layoutGrid = grids.find((grid) =>
+          ["COLUMNS", "ROWS"].includes(grid.pattern)
+        );
+
+        // If we find a frame with a valid layout grid, use it and break
+        if (
+          layoutGrid &&
+          "count" in layoutGrid &&
+          "offset" in layoutGrid &&
+          "gutterSize" in layoutGrid
+        ) {
+          parentFrame = parent;
+          break;
+        }
       }
 
       currentNode = parent as SceneNode;
     }
 
-    if (parentFrame && "layoutGrids" in parentFrame) {
+    if (parentFrame) {
       const grids = parentFrame.layoutGrids;
       const layoutGrid = grids.find((grid) =>
         ["COLUMNS", "ROWS"].includes(grid.pattern)
