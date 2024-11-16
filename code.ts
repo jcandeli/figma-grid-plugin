@@ -1,6 +1,6 @@
 figma.showUI(__html__);
 
-figma.ui.resize(350, 200);
+figma.ui.resize(350, 270);
 
 figma.on("selectionchange", () => {
   const selection = figma.currentPage.selection;
@@ -74,9 +74,8 @@ figma.on("selectionchange", () => {
         }
         figma.ui.postMessage({
           type: "result",
-          message: `${spannedUnits} ${unitType}${
-            spannedUnits === 1 ? "" : "s"
-          }`,
+          units: spannedUnits,
+          unitType: unitType,
         });
       } else {
         figma.ui.postMessage({
