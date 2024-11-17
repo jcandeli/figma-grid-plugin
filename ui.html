@@ -1,6 +1,7 @@
 <style>
   :root {
     --secondary-text-color: rgb(71 85 105);
+    --border-color: #E0E0E0;
   }
 
   body {
@@ -14,6 +15,11 @@
     padding: 16px;
     border-radius: 6px;
     background: rgb(241 245 249);
+    height: 95px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   h3 {
@@ -28,7 +34,7 @@
     gap: 8px;
     padding: 6px 8px;
     border-radius: 6px;
-    border: 1px solid #E0E0E0;
+    border: 1px solid var(--border-color);
   }
 
   .alert p {
@@ -46,6 +52,32 @@
   #unitType {
     display: block;
     color: var(--secondary-text-color);
+  }
+
+  #nothingSelected {
+    display: block;
+    color: #b1b1b1;
+  }
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    color: #b1b1b1;
   }
 </style>
 
@@ -70,21 +102,53 @@
 
 <p id="result">
   <span id="units"></span>
-  <span id="unitType"></span>
+  <span id="unitType">
+    <span id="nothingSelected">Nothing selected</span>
+  </span>
 </p>
 
+<div class="buttons">
+  <button id="decrement">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus w-6 h-6">
+      <path d="M5 12h14"></path>
+    </svg>
+  </button>
+  <button id="increment">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus w-6 h-6">
+      <path d="M12 5v14"></path>
+      <path d="M5 12h14"></path>
+    </svg>
+  </button>
+</div>
+
 <script>
+  let currentUnits = 0;
+  const decrementButton = document.getElementById('decrement');
+  const incrementButton = document.getElementById('increment');
+
+  function disableButtons(isDisabled) {
+    decrementButton.disabled = isDisabled;
+    incrementButton.disabled = isDisabled;
+  }
+  disableButtons(true);
+
   onmessage = (event) => {
     const message = event.data.pluginMessage;
     const unitsElement = document.getElementById('units');
     const unitTypeElement = document.getElementById('unitType');
 
     if (message.type === 'result') {
-      unitsElement.textContent = message.units;
-      unitTypeElement.textContent = message.unitType + (message.units > 1 ? 's' : '');
+      currentUnits = message.units;
+      unitsElement.textContent = currentUnits;
+      unitTypeElement.textContent = message.unitType + (currentUnits > 1 ? 's' : '');
+      disableButtons(false);
     } else if (message.type === 'error') {
+      currentUnits = 0;
       unitsElement.textContent = '';
       unitTypeElement.textContent = message.message;
+      disableButtons(true);
     }
   }
 </script>

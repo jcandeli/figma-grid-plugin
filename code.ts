@@ -1,6 +1,6 @@
 figma.showUI(__html__);
 
-figma.ui.resize(350, 270);
+figma.ui.resize(350, 335);
 
 figma.on("selectionchange", () => {
   const selection = figma.currentPage.selection;
