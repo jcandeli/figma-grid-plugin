@@ -134,6 +134,14 @@
   }
   disableButtons(true);
 
+  decrementButton.addEventListener('click', () => {
+    parent.postMessage({ pluginMessage: { type: 'decrement' } }, '*');
+  });
+
+  incrementButton.addEventListener('click', () => {
+    parent.postMessage({ pluginMessage: { type: 'increment' } }, '*');
+  });
+
   onmessage = (event) => {
     const message = event.data.pluginMessage;
     const unitsElement = document.getElementById('units');
