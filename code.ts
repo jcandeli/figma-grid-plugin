@@ -22,14 +22,19 @@ figma.on("selectionchange", () => {
     while (currentNode.parent && currentNode.parent.type !== "DOCUMENT") {
       const parent = currentNode.parent;
 
-      // Check if the parent has layoutGrids and is a frame-like container
-      if ("layoutGrids" in parent && parent.type === "FRAME") {
+      // Updated check to include COMPONENT and COMPONENT_SET
+      if (
+        "layoutGrids" in parent &&
+        (parent.type === "FRAME" ||
+          parent.type === "COMPONENT" ||
+          parent.type === "COMPONENT_SET")
+      ) {
         const grids = parent.layoutGrids;
         const layoutGrid = grids.find((grid) =>
           ["COLUMNS", "ROWS"].includes(grid.pattern)
         );
 
-        // If we find a frame with a valid layout grid, use it and break
+        // If we find a container with a valid layout grid, use it and break
         if (
           layoutGrid &&
           "count" in layoutGrid &&
@@ -96,13 +101,13 @@ figma.on("selectionchange", () => {
       } else {
         figma.ui.postMessage({
           type: "error",
-          message: "The parent frame doesn't have a valid layout grid.",
+          message: "No parent frame or component with a layout grid was found.",
         });
       }
     } else {
       figma.ui.postMessage({
         type: "error",
-        message: "No parent frame with a layout grid was found.",
+        message: "No parent frame or component with a layout grid was found.",
       });
     }
   } else {
